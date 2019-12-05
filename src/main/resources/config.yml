@@ -1,0 +1,116 @@
+# HubsValues
+
+sql:
+  database: minecraft
+  user: Minecraft
+  password: qwerty123
+
+# load values on player join or not. turn on if this server is not a lobby (authorise plugin missing)
+load-values-on-join: false
+
+economy-types:
+- "hubixes"
+- "dollars"
+- "mana"
+- "max"
+- "regen"
+
+hubixes:
+  name: "Hubixes"
+  symbol: "Ⓗ"
+  color: "&6"
+
+dollars:
+  name: "Dollars"
+  symbol: "$"
+  color: "&e"
+  rate: 1000
+
+mana:
+  name: "Mana"
+  symbol: "★"
+  color: "&b"
+  start_amount: 20
+
+max:
+  name: "Max mana"
+  symbol: "★"
+  color: "&b"
+
+regen:
+  name: "Mana regen"
+  symbol: "★"
+  color: "&b"
+  start_amount: 2 # how many mana points will accrual every minute
+  offline_coefficient: 10 # how minutes per accrual mana if player is offline
+
+# possible placeholders: %player%, %dollars%, %hubixes%, %mana%, %max%, %regen%
+board:
+  title:
+    interval: 3
+    liner:
+      - '&4> &c&lScoreboard &4<'
+      - '&4> &c&lcoreboar &4<'
+      - '&4> &c&loreboa &4<'
+      - '&4> &c&lrebo &4<'
+      - '&4> &c&leb &4<'
+      - '&4> &4<'
+      - '&4> &4<'
+      - '&4> &c&leb &4<'
+      - '&4> &c&lrebo &4<'
+      - '&4> &c&loreboa &4<'
+      - '&4> &c&lcoreboar &4<'
+      - '&4> &c&lScoreboard &4<'
+  rows:
+    1:
+      interval: 5
+      liner:
+        - '&c------------------------'
+    2:
+      interval: 80
+      liner:
+        - '&cPlayer:'
+    3:
+      interval: 80
+      liner:
+        - '%player%'
+    4:
+      interval: 80
+      liner:
+        - '&cDollars:'
+    5:
+      interval: 80
+      liner:
+        - '%dollars%'
+    6:
+      interval: 5
+      liner:
+        - '&cHubixes:'
+    7:
+      interval: 80
+      liner:
+        - '%hubixes%'
+    '8':
+      interval: 80
+      liner:
+        - '&cMana:'
+    '9':
+      interval: 20
+      liner:
+        - '%mana%'
+    10:
+      interval: 80
+      liner:
+        - ''
+    11:
+      interval: 80
+      liner:
+        - 'This is an awesome plugin'
+    12:
+      interval: 80
+      liner:
+        - 'made by Rosenboum.'
+    50:
+      interval: 5
+      liner:
+        - '&c------------------------'

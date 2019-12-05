@@ -1,0 +1,64 @@
+name: HubsValues
+version: ${project.version}
+main: ru.hubsmc.hubsvalues.HubsValues
+api-version: 1.13
+prefix: HubsValues
+authors: [Rosenboum,pavel151]
+description: The number one plugin of HUBS that is responsible for Three Currency System
+website: hubsmc.ru
+
+commands:
+  hubsval:
+    description: The main command for HubsValues
+    usage: <command>
+    aliases: [hv]
+  mana:
+    description: The mana command for HubsValues
+    usage: <command>
+  pay:
+    description: The pay command for HubsValues
+    usage: <command>
+  convert:
+    description: The convert command for HubsVaules
+    usage: <command>
+  dollartop:
+    description: The top command for HubsValues
+    usage: <command>
+    aliases: [baltop]
+
+permissions:
+  hubsval.*:
+    description: Gives access to all HubsValues permissions.
+    children:
+      hubsval.help: true
+      hubsval.reload: true
+      hubsval.check: true
+      hubsval.change: true
+      hubsval.pay: true
+      hubsval.pay.*: true
+      hubsval.top: true
+  hubsval.pay.*:
+    description: Gives acces to all pay permissions.
+    children:
+      hubsval.pay.all: true
+  hubsval.help:
+    description: Display help message.
+    default: false
+  hubsval.reload:
+    description: Reload the config files.
+    default: false
+  hubsval.check:
+    description: Check player balance.
+    default: false
+  hubsval.change:
+    description: Change player balance.
+    default: false
+  hubsval.pay:
+    description: Pay value to another player.
+    default: false
+  hubsval.pay.all:
+    description: Pay value to all players.
+    default: false
+  hubsval.top:
+    description: Show the top of the players in that economy.
+    default: false
