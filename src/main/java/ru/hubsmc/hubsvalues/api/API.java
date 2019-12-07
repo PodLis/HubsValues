@@ -9,6 +9,14 @@ import static ru.hubsmc.hubsvalues.api.DataStore.*;
 public class API {
 
     /**
+     * Update custom placeholders to scoreboard
+     * @param player the online player
+     */
+    public static void updateCustomPlaceholders(Player player, String v1, String v2, String v3, String v4) {
+        HubsValues.boardMap.get(player).updateCustomValues(v1, v2, v3, v4);
+    }
+
+    /**
      * Check if user has value data
      * @param UUID the UUID of the player to check
      * @return true if player has a value data, false otherwise

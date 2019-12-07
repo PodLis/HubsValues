@@ -12,7 +12,7 @@ public class ScoreboardHolder {
 
     private SlimBoard slim;
 
-    private String vPlayer = "", vDollars = "", vHubixes = "", vMana = "", vMax = "", vRegen = "";
+    private String vPlayer = "", vDollars = "", vHubixes = "", vMana = "", vMax = "", vRegen = "", vCustom1 = "", vCustom2 = "", vCustom3 = "", vCustom4 = "";
 
     public ScoreboardHolder(App app, Player player) {
 
@@ -48,7 +48,11 @@ public class ScoreboardHolder {
                 .replace("%hubixes%", vHubixes)
                 .replace("%mana%", vMana)
                 .replace("%max%", vMax)
-                .replace("%regen%", vRegen);
+                .replace("%regen%", vRegen)
+                .replace("%c1%", vCustom1)
+                .replace("%c2%", vCustom2)
+                .replace("%c3%", vCustom3)
+                .replace("%c4%", vCustom4);
     }
 
     public void updateValues() {
@@ -58,6 +62,13 @@ public class ScoreboardHolder {
         vMana = "" + getMana(player);
         vMax = "" + getMaxMana(player);
         vRegen = "" + getRegenMana(player);
+    }
+
+    public void updateCustomValues(String v1, String v2, String v3, String v4) {
+        vCustom1 = v1;
+        vCustom2 = v2;
+        vCustom3 = v3;
+        vCustom4 = v4;
     }
 
 }

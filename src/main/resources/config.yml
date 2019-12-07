@@ -45,6 +45,8 @@ regen:
   offline_coefficient: 10 # how minutes per accrual mana if player is offline
 
 # possible placeholders: %player%, %dollars%, %hubixes%, %mana%, %max%, %regen%
+# possible custom placeholders: %c1%, %c2%, %c3%, %c4%
+# custom placeholders define by another plugin (HubsArena for example)
 board:
   title:
     interval: 3
