@@ -48,6 +48,10 @@ public class DataStore {
     }
 
 
+    static boolean isPlayerOnline(Player player) {
+        return dollarMap.containsKey(player);
+    }
+
     static int getManaFromMap(Player player) {
         return manaMap.get(player);
     }

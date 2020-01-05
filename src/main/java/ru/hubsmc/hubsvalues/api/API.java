@@ -124,6 +124,14 @@ public class API {
         saveAllMapValues(player.getUniqueId().toString(), getManaFromMap(player), getMaxManaFromMap(player), getRegenManaFromMap(player), getDollarsFromMap(player));
     }
 
+    /**
+     * Check if player is online (have data in memory)
+     * @param player the player to check
+     */
+    public static boolean isPlayerOnline(Player player) {
+        return DataStore.isPlayerOnline(player);
+    }
+
 
 
     /**
