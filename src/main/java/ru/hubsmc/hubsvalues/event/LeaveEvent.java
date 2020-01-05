@@ -20,7 +20,7 @@ public class LeaveEvent implements Listener {
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onQuit(PlayerQuitEvent event) {
-        if (isPlayerOnline(event.getPlayer())) {
+        if (isPlayerOnline(event.getPlayer()) && HubsValues.isOnline()) {
             savePlayerData(event.getPlayer());
             if (app == null) {
                 return;

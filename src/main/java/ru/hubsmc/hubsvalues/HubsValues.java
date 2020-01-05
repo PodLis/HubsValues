@@ -38,6 +38,7 @@ public final class HubsValues extends JavaPlugin {
     public static Map<Player, ScoreboardHolder> boardMap;
 
     private static HubsValues instance;
+    private static boolean online;
 
     private FileConfiguration configuration;
     private File file;
@@ -81,6 +82,7 @@ public final class HubsValues extends JavaPlugin {
             getCommand("hubsval").setExecutor(commands);
             getCommand("hubsval").setTabCompleter(commands);
 
+            online = true;
             logConsole("Successfully enabled.");
         } catch (Throwable e) {
             e.printStackTrace();
@@ -92,12 +94,13 @@ public final class HubsValues extends JavaPlugin {
     @Override
     public void onDisable() {
         try {
-            dataStore.closeConnections();
+            online = false;
             unloadBoard();
             cancelTask();
             for (Player player : Bukkit.getOnlinePlayers()) {
                 savePlayerData(player);
             }
+            dataStore.closeConnections();
             logConsole("Successfully disabled.");
         } catch (Throwable e) {
             e.printStackTrace();
@@ -174,6 +177,10 @@ public final class HubsValues extends JavaPlugin {
 
     public static HubsValues getInstance() {
         return instance;
+    }
+
+    public static boolean isOnline() {
+        return online;
     }
 
     public void logConsole(String info) {
