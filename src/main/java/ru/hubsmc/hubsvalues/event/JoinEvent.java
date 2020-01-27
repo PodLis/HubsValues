@@ -16,7 +16,7 @@ public class JoinEvent implements Listener {
     @EventHandler
     public void onJoin(PlayerJoinEvent event) {
         if (HubsValues.LOAD_VALUES_ON_JOIN) {
-            loadPlayerData(event.getPlayer(), HubsValues.START_MANA, HubsValues.START_REGEN);
+            loadPlayerData(event.getPlayer());
             HubsValues.boardMap.put(event.getPlayer(), new ScoreboardHolder(HubsValues.app, event.getPlayer()));
         }
     }

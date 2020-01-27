@@ -9,7 +9,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitScheduler;
 import org.bukkit.scoreboard.Scoreboard;
 import ru.hubsmc.hubsvalues.api.API;
-import ru.hubsmc.hubsvalues.api.DataStore;
+import ru.hubsmc.hubsvalues.api.SpecialDataStore;
 import ru.hubsmc.hubsvalues.board.App;
 import ru.hubsmc.hubsvalues.board.ScoreboardHolder;
 import ru.hubsmc.hubsvalues.commands.ConvertCommand;
@@ -45,7 +45,7 @@ public final class HubsValues extends JavaPlugin {
 
     private BukkitScheduler onlineScheduler, offlineScheduler;
 
-    private DataStore dataStore;
+    private SpecialDataStore specialDataStore;
 
     @Override
     public void onEnable() {
@@ -100,7 +100,7 @@ public final class HubsValues extends JavaPlugin {
             for (Player player : Bukkit.getOnlinePlayers()) {
                 savePlayerData(player);
             }
-            dataStore.closeConnections();
+            specialDataStore.closeConnections();
             logConsole("Successfully disabled.");
         } catch (Throwable e) {
             e.printStackTrace();
@@ -135,8 +135,8 @@ public final class HubsValues extends JavaPlugin {
                 logConsole("The 'config.yml' file successfully created!");
             }
 
-            dataStore = new DataStore();
-            dataStore.prepareToWork("jdbc:mariadb://localhost/" + configuration.getString("sql.database"),
+            specialDataStore = new SpecialDataStore();
+            specialDataStore.prepareToWork("jdbc:mariadb://localhost/" + configuration.getString("sql.database"),
                     configuration.getString("sql.user"),
                     configuration.getString("sql.password"));
 
@@ -148,7 +148,7 @@ public final class HubsValues extends JavaPlugin {
 
             // small protection, if somebody (once) will join on the server before plugin completely loaded
             for (Player player : Bukkit.getOnlinePlayers()) {
-                loadPlayerData(player, START_MANA, START_REGEN);
+                loadPlayerData(player);
             }
 
         } catch (Throwable e) {

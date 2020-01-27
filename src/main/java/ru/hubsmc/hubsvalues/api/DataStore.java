@@ -1,41 +1,33 @@
 package ru.hubsmc.hubsvalues.api;
 
-import org.bukkit.entity.Player;
-
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.HashMap;
-import java.util.Map;
 
 public class DataStore {
 
-    private static final String TABLE_NAME = "hubsval";
-    public static final String C_UUID = "uuid";
-    public static final String C_PLAYER = "player";
-    public static final String C_DOLLARS = "dollars";
-    public static final String C_HUBIXES = "hubixes";
-    public static final String C_MANA = "mana";
-    public static final String C_MAX = "max";
-    public static final String C_REGEN = "regen";
-
-    private static Map<Player, Integer> manaMap;
-    private static Map<Player, Integer> maxManaMap;
-    private static Map<Player, Integer> regenManaMap;
-    private static Map<Player, Integer> dollarMap;
+    private static String TABLE_NAME;
+    protected static final String C_UUID = "uuid";
+    private static String[] COLUMNS;
+    private static String[] stringPrimalValues;
+    private static int[] intPrimalValues;
+    private static double[] doublePrimalValues;
 
     private static DataBase dataBase;
-    private static DataBase.Manager manager;
+    protected static DataBase.Manager manager;
 
-    public DataStore() {
+    public DataStore(String table, String... columns) {
+        TABLE_NAME = table;
+        COLUMNS = columns;
     }
 
-    public void prepareToWork(String url, String user, String password) {
+    public void prepareToWork(String url, String user, String password, String[] stringPrimal, int[] intPrimal, double[] doublePrimal) {
+        if (stringPrimal.length + intPrimal.length + doublePrimal.length != COLUMNS.length) {
+            throw new IllegalArgumentException();
+        }
+        stringPrimalValues = stringPrimal;
+        intPrimalValues = intPrimal;
+        doublePrimalValues = doublePrimal;
         try {
-            manaMap = new HashMap<>();
-            maxManaMap = new HashMap<>();
-            regenManaMap = new HashMap<>();
-            dollarMap = new HashMap<>();
-
             dataBase = new DataBase(url, user, password);
             manager = dataBase.GetManager();
         } catch (Exception e) {
@@ -48,89 +40,57 @@ public class DataStore {
     }
 
 
-    static boolean isPlayerOnline(Player player) {
-        return dollarMap.containsKey(player);
-    }
-
-    static int getManaFromMap(Player player) {
-        return manaMap.get(player);
-    }
-
-    static int getMaxManaFromMap(Player player) {
-        return maxManaMap.get(player);
-    }
-
-    static int getRegenManaFromMap(Player player) {
-        return regenManaMap.get(player);
-    }
-
-    static int getDollarsFromMap(Player player) {
-        return dollarMap.get(player);
-    }
-
-    static void setManaToMap(Player player, int amount) {
-        manaMap.put(player, amount);
-    }
-
-    static void setMaxManaToMap(Player player, int amount) {
-        maxManaMap.put(player, amount);
-    }
-
-    static void setRegenManaToMap(Player player, int amount) {
-        regenManaMap.put(player, amount);
-    }
-
-    static void setDollarsToMap(Player player, int amount) {
-        dollarMap.put(player, amount);
-    }
-
-
-    static int loadValue(String UUID, String valueType) {
-        return selectValue(UUID, valueType);
-    }
-
-    static void saveValue(String UUID, String valueType, int valueAmount) {
+    public static void saveValue(String UUID, String valueType, String valueAmount) {
         update(UUID, valueType, valueAmount);
     }
 
-    static void saveAllMapValues(String UUID, int manaAmount, int maxAmount, int regenAmount, int dollarsAmount) {
-        update(UUID, C_MANA, manaAmount);
-        update(UUID, C_MAX, maxAmount);
-        update(UUID, C_REGEN, regenAmount);
-        update(UUID, C_DOLLARS, dollarsAmount);
+    public static void saveValue(String UUID, String valueType, int valueAmount) {
+        update(UUID, valueType, valueAmount);
     }
 
-    static void increaseManaForAll() {
-        updateIncreaseAll();
+    public static void saveValue(String UUID, String valueType, double valueAmount) {
+        update(UUID, valueType, valueAmount);
     }
 
-    static boolean checkDataExist(String UUID) {
-        return selectExist(UUID);
+    public static void saveAllValues(String UUID, String[] strings, int[] integers, double[] doubles) {
+        int i = 0;
+        for (String value : strings) {
+            update(UUID, COLUMNS[i], value);
+            i++;
+        }
+        for (int value : integers) {
+            update(UUID, COLUMNS[i], value);
+            i++;
+        }
+        for (double value : doubles) {
+            update(UUID, COLUMNS[i], value);
+            i++;
+        }
     }
 
-    static void createAccount(String UUID, String playerName, int manaAmount, int regenAmount) {
-        insert(UUID, playerName, 0, 0, manaAmount, manaAmount, regenAmount);
+    public static void createAccount(String UUID) {
+        insert(UUID, stringPrimalValues, intPrimalValues, doublePrimalValues);
     }
 
-    private static void insert(String uuid, String player, int dollars, int hubixes, int mana, int max, int regen) {
-        manager.Execute("insert into " + TABLE_NAME + "(" +
-                C_UUID + ", " + C_PLAYER + ", " +
-                C_DOLLARS + ", " + C_HUBIXES + ", " + C_MANA + ", " + C_MAX + ", " + C_REGEN +
-                ") values (" +
-                "'" + uuid + "'" + ", " + "'" + player + "'" + ", " +
-                dollars + ", " + hubixes + ", " + mana + ", " + max + ", " + regen +
-                ")");
+    public static void deleteAccount(String UUID) {
+        delete(UUID);
     }
 
-    private static void update(String uuid, String column, int amount) {
-        manager.Execute("update " + TABLE_NAME + " set " + column + " = " + amount + " where " + C_UUID + " = '" + uuid + "'");
+
+    // data-safe requests
+
+    public static String selectStringValue(String uuid, String column) {
+        try {
+            ResultSet rs = manager.Request("SELECT " + column + " FROM " + TABLE_NAME + " WHERE " + C_UUID + " = '" + uuid + "'");
+            rs.next();
+            return rs.getString(1);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return "";
     }
 
-    private static void delete(String uuid) {
-        manager.Execute("delete from " + TABLE_NAME + " where " + C_UUID + " = '" + uuid + "'");
-    }
-
-    private static int selectValue(String uuid, String column) {
+    public static int selectIntValue(String uuid, String column) {
         try {
             ResultSet rs = manager.Request("SELECT " + column + " FROM " + TABLE_NAME + " WHERE " + C_UUID + " = '" + uuid + "'");
             rs.next();
@@ -141,7 +101,18 @@ public class DataStore {
         return 0;
     }
 
-    private static boolean selectExist(String uuid) {
+    public static double selectDoubleValue(String uuid, String column) {
+        try {
+            ResultSet rs = manager.Request("SELECT " + column + " FROM " + TABLE_NAME + " WHERE " + C_UUID + " = '" + uuid + "'");
+            rs.next();
+            return rs.getDouble(1);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+
+    public static boolean selectExist(String uuid) {
         try {
             ResultSet rs = manager.Request("SELECT * FROM " + TABLE_NAME + " WHERE " + C_UUID + " = '" + uuid + "'");
             return rs.next();
@@ -151,15 +122,44 @@ public class DataStore {
         return false;
     }
 
-    private static void updateIncreaseAll() {
-        try {
-            ResultSet rs = manager.Request("SELECT " + C_UUID + ", " + C_MANA + ", " + C_REGEN + " FROM " + TABLE_NAME);
-            while (rs.next()) {
-                update(rs.getString(C_UUID), C_MANA, rs.getInt(C_MANA) + rs.getInt(C_REGEN));
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
+
+    // data-unsafe requests
+
+    protected static void insert(String uuid, String[] strings, int[] integers, double[] doubles) {
+        StringBuilder sql = new StringBuilder("insert into " + TABLE_NAME + "(" + C_UUID);
+        for (String column : COLUMNS) {
+            sql.append(", ").append(column);
         }
+
+        sql.append(") values (" + "'").append(uuid).append("'");
+        for (String value : strings) {
+            sql.append(", " + "'").append(value).append("'");
+        }
+        for (int value : integers) {
+            sql.append(", ").append(value);
+        }
+        for (double value : doubles) {
+            sql.append(", ").append(value);
+        }
+        sql.append(")");
+
+        manager.Execute(sql.toString());
+    }
+
+    protected static void update(String uuid, String column, String value) {
+        manager.Execute("update " + TABLE_NAME + " set " + column + " = '" + value + "' where " + C_UUID + " = '" + uuid + "'");
+    }
+
+    protected static void update(String uuid, String column, int value) {
+        manager.Execute("update " + TABLE_NAME + " set " + column + " = " + value + " where " + C_UUID + " = '" + uuid + "'");
+    }
+
+    protected static void update(String uuid, String column, double value) {
+        manager.Execute("update " + TABLE_NAME + " set " + column + " = " + value + " where " + C_UUID + " = '" + uuid + "'");
+    }
+
+    protected static void delete(String uuid) {
+        manager.Execute("delete from " + TABLE_NAME + " where " + C_UUID + " = '" + uuid + "'");
     }
 
 }

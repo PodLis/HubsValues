@@ -4,7 +4,7 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import ru.hubsmc.hubsvalues.HubsValues;
 
-import static ru.hubsmc.hubsvalues.api.DataStore.*;
+import static ru.hubsmc.hubsvalues.api.SpecialDataStore.*;
 
 public class API {
 
@@ -22,7 +22,7 @@ public class API {
      * @return true if player has a value data, false otherwise
      */
     public static boolean checkDataExist(String UUID) {
-        return DataStore.checkDataExist(UUID);
+        return SpecialDataStore.checkDataExist(UUID);
     }
 
     /**
@@ -100,19 +100,19 @@ public class API {
      * Load player mana, max, regen, dollars from database to map
      * @param player the player to load
      */
-    public static void loadPlayerData(Player player, int startMana, int startRegen) {
+    public static void loadPlayerData(Player player) {
         String UUID = player.getUniqueId().toString();
-        if (DataStore.checkDataExist(UUID)) {
+        if (SpecialDataStore.checkDataExist(UUID)) {
             setManaToMap(player, Math.min(loadValue(UUID, "mana"), loadValue(UUID, "max")));
             setMaxManaToMap(player, loadValue(UUID, "max"));
             setRegenManaToMap(player, loadValue(UUID, "regen"));
             setDollarsToMap(player, loadValue(UUID, "dollars"));
         } else {
-            setManaToMap(player, startMana);
-            setMaxManaToMap(player, startMana);
-            setRegenManaToMap(player, startRegen);
+            setManaToMap(player, HubsValues.START_MANA);
+            setMaxManaToMap(player, HubsValues.START_MANA);
+            setRegenManaToMap(player, HubsValues.START_REGEN);
             setDollarsToMap(player, 0);
-            createAccount(player.getUniqueId().toString(), player.getDisplayName(), startMana, startRegen);
+            createAccount(player.getUniqueId().toString(), player.getDisplayName());
         }
     }
 
@@ -129,7 +129,7 @@ public class API {
      * @param player the player to check
      */
     public static boolean isPlayerOnline(Player player) {
-        return DataStore.isPlayerOnline(player);
+        return SpecialDataStore.isPlayerOnline(player);
     }
 
 

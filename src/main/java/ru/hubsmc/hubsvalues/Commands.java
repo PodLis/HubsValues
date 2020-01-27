@@ -71,7 +71,7 @@ public class Commands implements CommandExecutor, TabCompleter {
 
                     Player player = (Player) sender;
 
-                    loadPlayerData(player, HubsValues.START_MANA, HubsValues.START_REGEN);
+                    loadPlayerData(player);
                     HubsValues.boardMap.put(player, new ScoreboardHolder(HubsValues.app, player));
 
                     return true;
@@ -94,7 +94,7 @@ public class Commands implements CommandExecutor, TabCompleter {
                     plugin.loadFiles();
                     plugin.loadBoard();
                     for (Player player : Bukkit.getOnlinePlayers()) {
-                        loadPlayerData(player, HubsValues.START_MANA, HubsValues.START_REGEN);
+                        loadPlayerData(player);
                         HubsValues.boardMap.put(player, new ScoreboardHolder(HubsValues.app, player));
                     }
                     plugin.startTask();
